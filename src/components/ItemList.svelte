@@ -1,7 +1,4 @@
 <script lang="ts">
-	/**
-	 * TODO: make reusable for other items!
-	 */
 	import { selectedAccount, web3 } from 'svelte-web3';
 	import Decimal from 'decimal.js-light';
 	import { batchAccounts } from '../utils';
@@ -15,6 +12,7 @@
 	let loading = false;
 	let items: Item[] = [];
 
+	// TODO finalize placement of function i.e. here or on parent component???
 	const getItems = async () => {
 		console.log('getting items...');
 		loading = true;

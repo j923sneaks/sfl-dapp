@@ -10,9 +10,9 @@
 	import { onMount } from 'svelte/internal';
 
 	import InventoryJSON from '../abi/Inventory.json';
-	import { CROPS, FLAGS, MAINNET_ADDRESS, NFTs, RESOURCES, TOOLS } from '../constants';
-
-	import ItemList from '../components/ItemList.svelte';
+	import { MAINNET_ADDRESS } from '../constants';
+	import ItemListPage from '../pages/ItemListPage.svelte';
+	import DepositPage from '../pages/DepositPage.svelte';
 
 	let inventory: any;
 	// todo get from localstorage?
@@ -33,17 +33,33 @@
 	const toggleHide = () => (showZeroBalance = !showZeroBalance);
 </script>
 
-<h1>SFL Item Batch Transfers</h1>
 {#if $connected}
-	<p>Connected! chain: {$chainId}</p>
-	<p>Balances of <span class="monospace">{$selectedAccount}</span></p>
-	<input type="checkbox" on:click={toggleHide} /> show zero balances
-	<!-- arbitrary order -->
-	<ItemList inventory={$inventory} {showZeroBalance} record={CROPS} title="Crops" />
-	<ItemList inventory={$inventory} {showZeroBalance} record={RESOURCES} title="Resources" />
-	<ItemList inventory={$inventory} {showZeroBalance} record={NFTs} title="NFTs" />
-	<ItemList inventory={$inventory} {showZeroBalance} record={TOOLS} title="Tools" />
-	<ItemList inventory={$inventory} {showZeroBalance} record={FLAGS} title="Flags" />
+	<section class="detail">
+		<p>Connected! chain: {$chainId}</p>
+		<p>Balances of <span class="monospace">{$selectedAccount}</span></p>
+	</section>
+	<section class="lists-deposit">
+		<section class="lists">
+			<input type="checkbox" on:click={toggleHide} /> show zero balances
+			<ItemListPage inventory={$inventory} {showZeroBalance} />
+		</section>
+		<section class="deposit"><DepositPage /></section>
+	</section>
 {:else}
 	<p>Not connected!</p>
 {/if}
+
+<style>
+	.lists-deposit {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.lists {
+		width: 70%;
+	}
+
+	.deposit {
+		width: 30%;
+	}
+</style>

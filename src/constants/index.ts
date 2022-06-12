@@ -150,11 +150,7 @@ export const NFTs: ItemRecord = {
 		name: 'Gold Egg',
 		unit: 'wei',
 		imageUrl: 'https://sunflower-land.com/play/erc1155/409.png'
-	}
-};
-
-// test wei item
-export const FLAGS: ItemRecord = {
+	},
 	804: {
 		tokenId: 804,
 		name: 'Chinese Flag',
