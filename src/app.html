@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+		<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+		<!-- Material Icons -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<!-- Roboto -->
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700"
+		/>
+		<!-- Roboto Mono -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono" />
+		<!-- SMUI Styles -->
+		<!-- <link rel="stylesheet" href="/smui.css" media="(prefers-color-scheme: light)" /> -->
+		<!-- enable dark mode as default -->
+		<!-- <link
+			rel="stylesheet"
+			href="/smui-dark.css"
+			media="screen and (prefers-color-scheme: dark)"
+		/> -->
+	</head>
+	<!-- correct placement? -->
+	<style>
+		body {
+			font-family: 'Roboto';
+			font-size: 14px;
+		}
+
+		.monospace {
+			font-family: monospace;
+		}
+	</style>
+	<body>
+		<div>%sveltekit.body%</div>
+	</body>
+</html>
