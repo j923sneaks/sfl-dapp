@@ -4,7 +4,6 @@
 		connected,
 		defaultEvmStores,
 		makeContractStore,
-		selectedAccount
 	} from 'svelte-web3';
 	import Decimal from 'decimal.js-light';
 	import { onMount } from 'svelte/internal';
@@ -15,8 +14,6 @@
 	import DepositPage from '../pages/DepositPage.svelte';
 
 	let inventory: any;
-	// todo get from localstorage?
-	let showZeroBalance = false;
 
 	onMount(() => {
 		defaultEvmStores.setProvider();
@@ -30,18 +27,15 @@
 		});
 	});
 
-	const toggleHide = () => (showZeroBalance = !showZeroBalance);
 </script>
 
 {#if $connected}
 	<section class="detail">
 		<p>Connected! chain: {$chainId}</p>
-		<p>Balances of <span class="monospace">{$selectedAccount}</span></p>
 	</section>
 	<section class="lists-deposit">
 		<section class="lists">
-			<input type="checkbox" on:click={toggleHide} /> show zero balances
-			<ItemListPage inventory={$inventory} {showZeroBalance} />
+			<ItemListPage inventory={$inventory} />
 		</section>
 		<section class="deposit"><DepositPage /></section>
 	</section>
@@ -57,9 +51,16 @@
 
 	.lists {
 		width: 70%;
+		word-wrap: break-word;
 	}
 
 	.deposit {
 		width: 30%;
+	}
+
+	@media screen and (max-width: 400px) {
+		.lists-deposit {
+			flex-direction: column-reverse;
+		}
 	}
 </style>

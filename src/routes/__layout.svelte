@@ -1,5 +1,5 @@
 <header>
-	<h1>SFL Item Batch Transfers</h1>
+	<h1>SFL dApp</h1>
 </header>
 <main>
 	<slot />

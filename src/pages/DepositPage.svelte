@@ -3,6 +3,9 @@
 <style>
 	.temp {
 		background-color: blanchedalmond;
+		border-radius: 10px;
+		min-height: 600px;
+		min-width: 300px;
 		padding: 10px;
 	}
 </style>
