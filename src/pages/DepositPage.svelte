@@ -10,6 +10,7 @@
 	let useFarmAddress = true;
 	let destAddress = '';
 	let selectItems: Item[] = [];
+	const keys = Object.keys(ALL).map(Number);
 
 	const toggleUseFarmAddress = () => (useFarmAddress = !useFarmAddress);
 
@@ -23,9 +24,8 @@
 	};
 
 	const getItems = async () => {
-		const keys = Object.keys(ALL) as unknown as number[];
+		// recreate batchedAccounts every call?
 		const batchedAccounts = batchAccounts(keys.length, $selectedAccount);
-
 		const rawBalances = await inventory.methods.balanceOfBatch(batchedAccounts, keys).call();
 		selectItems = rawBalances
 			.map((rawBalance: string, index: number) => {
