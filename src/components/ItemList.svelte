@@ -13,11 +13,9 @@
 	let items: Item[] = [];
 
 	// TODO finalize placement of function i.e. here or on parent component???
-	const getItems = async () => {
+	export const getItems = async () => {
 		console.log('getting items...');
 		loading = true;
-
-		await new Promise((resolve) => setTimeout(resolve, 200)); // test loading flag
 
 		const keys = Object.keys(record) as unknown as number[];
 

@@ -1,6 +1,5 @@
 import type { ItemRecord } from 'src/types';
-
-export const MAINNET_ADDRESS = '0x22d5f9B75c524Fec1D6619787e582644CD4D7422';
+import { MAINNET } from './contract-addresses';
 
 /**
  * List Crops and Limited Items i.e. withdrawable items for now
@@ -158,3 +157,5 @@ export const NFTs: ItemRecord = {
 		imageUrl: 'https://sunflower-land.com/play/erc1155/804.gif'
 	}
 };
+
+export { MAINNET };

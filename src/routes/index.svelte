@@ -9,16 +9,22 @@
 	import { onMount } from 'svelte/internal';
 
 	import InventoryJSON from '../abi/Inventory.json';
-	import { MAINNET_ADDRESS } from '../constants';
+	import FarmJSON from '../abi/Farm.json';
 	import ItemListPage from '../pages/ItemListPage.svelte';
 	import DepositPage from '../pages/DepositPage.svelte';
+	import { MAINNET } from '../constants';
 
+	/**
+	 * TODO: find a way to avoid prop drilling
+	 */
 	let inventory: any;
+	let farm: any;
 
 	onMount(() => {
 		defaultEvmStores.setProvider();
 
-		inventory = makeContractStore(InventoryJSON, MAINNET_ADDRESS) as any;
+		inventory = makeContractStore(InventoryJSON, MAINNET.INVENTORY) as any;
+		farm = makeContractStore(FarmJSON, MAINNET.FARM) as any;
 
 		// global setting
 		Decimal.set({
@@ -37,7 +43,7 @@
 		<section class="lists">
 			<ItemListPage inventory={$inventory} />
 		</section>
-		<section class="deposit"><DepositPage /></section>
+		<section class="deposit"><DepositPage farm={$farm} /></section>
 	</section>
 {:else}
 	<p>Not connected!</p>
