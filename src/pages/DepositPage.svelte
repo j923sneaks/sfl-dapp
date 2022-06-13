@@ -20,12 +20,10 @@
 			.getFarms($selectedAccount)
 			.call({ from: $selectedAccount });
 
-		destAddress = farmDetail.account;
+		destAddress = farmDetail?.account || '';
 	};
 
 	const getItems = async () => {
-		// recreate batchedAccounts every call?
-		const batchedAccounts = batchAccounts(keys.length, $selectedAccount);
 		const rawBalances = await inventory.methods.balanceOfBatch(batchedAccounts, keys).call();
 		selectItems = rawBalances
 			.map((rawBalance: string, index: number) => {
@@ -38,12 +36,14 @@
 			.filter((item: Item) => item.amount?.gt(0));
 	};
 
+	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);
+
 	$: if (useFarmAddress) {
 		getFarmAddress();
 	}
 
-	$: getFarmAddress();
-	$: getItems();
+	$: $selectedAccount, getFarmAddress();
+	$: $selectedAccount, getItems();
 </script>
 
 <div class="container">

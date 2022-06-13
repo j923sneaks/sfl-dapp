@@ -17,8 +17,6 @@
 	const getItems = async () => {
 		loading = true;
 
-		// recreate batchedAccounts every call?
-		const batchedAccounts = batchAccounts(keys.length, $selectedAccount);
 		const rawBalances = await inventory.methods.balanceOfBatch(batchedAccounts, keys).call();
 
 		items = rawBalances.map((rawBalance: string, index: number) => {
@@ -32,7 +30,9 @@
 		loading = false;
 	};
 
-	$: getItems();
+	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);
+
+	$: $selectedAccount, getItems();
 </script>
 
 <p>Balances of <span class="monospace">{$selectedAccount}</span></p>
