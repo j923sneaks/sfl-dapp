@@ -43,7 +43,7 @@
 		<section class="lists">
 			<ItemListPage inventory={$inventory} />
 		</section>
-		<section class="deposit"><DepositPage farm={$farm} /></section>
+		<section class="deposit"><DepositPage farm={$farm} inventory={$inventory} /></section>
 	</section>
 {:else}
 	<p>Not connected!</p>

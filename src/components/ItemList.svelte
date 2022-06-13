@@ -19,11 +19,11 @@
 
 		const keys = Object.keys(record) as unknown as number[];
 
-		const cropRawBalances = await inventory.methods
+		const rawBalances = await inventory.methods
 			.balanceOfBatch(batchAccounts(keys.length, $selectedAccount), keys)
 			.call();
 
-		items = cropRawBalances.map((rawBalance: string, index: number) => {
+		items = rawBalances.map((rawBalance: string, index: number) => {
 			const tokenId = keys[index];
 			return {
 				...record[tokenId],
