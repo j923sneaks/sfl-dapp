@@ -158,4 +158,6 @@ export const NFTs: ItemRecord = {
 	}
 };
 
+export const ALL: ItemRecord = { ...CROPS, ...RESOURCES, ...NFTs, ...TOOLS };
+
 export { MAINNET };

@@ -24,11 +24,15 @@
 <!-- arbitrary order -->
 <p class="">Balances of <span class="monospace">{$selectedAccount}</span></p>
 <input type="checkbox" on:click={toggleHide} /> show zero amount
-<br><br>
+<br /><br />
 <button on:click={refreshAll}>Refresh</button>
 <ItemList title="Crops" {inventory} {showZeroBalance} record={CROPS} bind:this={cropsList} />
-<ItemList title="Resources" {inventory} {showZeroBalance} record={RESOURCES} bind:this={resourcesList}/>
-<ItemList title="NFTs" {inventory} {showZeroBalance} record={NFTs} bind:this={nftsList}/>
-<ItemList title="Tools" {inventory} {showZeroBalance} record={TOOLS} bind:this={toolsList}/>
-
-
+<ItemList
+	title="Resources"
+	{inventory}
+	{showZeroBalance}
+	record={RESOURCES}
+	bind:this={resourcesList}
+/>
+<ItemList title="NFTs" {inventory} {showZeroBalance} record={NFTs} bind:this={nftsList} />
+<ItemList title="Tools" {inventory} {showZeroBalance} record={TOOLS} bind:this={toolsList} />

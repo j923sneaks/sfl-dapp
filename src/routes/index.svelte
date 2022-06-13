@@ -1,10 +1,5 @@
 <script lang="ts">
-	import {
-		chainId,
-		connected,
-		defaultEvmStores,
-		makeContractStore,
-	} from 'svelte-web3';
+	import { chainId, connected, defaultEvmStores, makeContractStore } from 'svelte-web3';
 	import Decimal from 'decimal.js-light';
 	import { onMount } from 'svelte/internal';
 
@@ -32,7 +27,6 @@
 			toExpNeg: -30
 		});
 	});
-
 </script>
 
 {#if $connected}

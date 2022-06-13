@@ -18,10 +18,9 @@
 		loading = true;
 
 		const keys = Object.keys(record) as unknown as number[];
+		const batchedAccounts = batchAccounts(keys.length, $selectedAccount);
 
-		const rawBalances = await inventory.methods
-			.balanceOfBatch(batchAccounts(keys.length, $selectedAccount), keys)
-			.call();
+		const rawBalances = await inventory.methods.balanceOfBatch(batchedAccounts, keys).call();
 
 		items = rawBalances.map((rawBalance: string, index: number) => {
 			const tokenId = keys[index];
@@ -34,9 +33,8 @@
 		loading = false;
 	};
 
+	$: getItems();
 	$: filteredList = showZeroBalance ? items : items.filter((item: Item) => item.amount?.gt(0));
-
-	getItems();
 </script>
 
 <h2>{title}</h2>
