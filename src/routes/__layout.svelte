@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { defaultEvmStores, makeContractStore } from 'svelte-web3';
-	import Decimal from 'decimal.js-light';
 	import { onMount } from 'svelte/internal';
 	import { goto } from '$app/navigation';
+	import { defaultEvmStores, makeContractStore } from 'svelte-web3';
+	import Decimal from 'decimal.js-light';
 
 	import { farmStore, inventoryStore } from '../stores';
 	import { MAINNET } from '../constants';

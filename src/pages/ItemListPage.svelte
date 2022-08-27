@@ -10,10 +10,10 @@
 	import type { Item } from '../types';
 	import ItemList from '../components/ItemList.svelte';
 
+	const keys = Object.keys(ALL).map(Number);
 	let showZeroBalance = false;
 	let loading = false;
 	let items: Item[] = [];
-	const keys = Object.keys(ALL).map(Number);
 
 	onMount(() => getItems());
 
