@@ -47,9 +47,8 @@
 </script>
 
 <div class="container">
-	<!-- TODO: get farm address and auto populate -->
 	<div class="content">
-		<h2>Deposit</h2>
+		<h2>Transfer</h2>
 		<!-- separate component? -->
 		<div class="selection">
 			<select>
@@ -77,7 +76,7 @@
 				<input type="checkbox" checked={useFarmAddress} on:click={toggleUseFarmAddress} /> farm address
 			</div>
 			<div class="warning">Always check details before proceeding!</div>
-			<button>DEPOSIT</button>
+			<button>TRANSFER</button>
 		</div>
 	</div>
 </div>

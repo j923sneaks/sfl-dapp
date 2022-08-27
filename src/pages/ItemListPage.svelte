@@ -1,23 +1,28 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { selectedAccount, web3 } from 'svelte-web3';
 	import Decimal from 'decimal.js-light';
-	import ItemList from '../components/ItemList.svelte';
 	import { batchAccounts } from '../utils';
-	import { ALL, CROPS, NFTs, RESOURCES, TOOLS } from '../constants';
-	import type { Item } from '..//types';
 
-	export let inventory: any;
+	import { inventoryStore } from '../stores';
+	import { ALL, CROPS, NFTs, RESOURCES, TOOLS } from '../constants';
+
+	import type { Item } from '../types';
+	import ItemList from '../components/ItemList.svelte';
+
 	let showZeroBalance = false;
 	let loading = false;
 	let items: Item[] = [];
 	const keys = Object.keys(ALL).map(Number);
+
+	onMount(() => getItems());
 
 	const toggleHide = () => (showZeroBalance = !showZeroBalance);
 
 	const getItems = async () => {
 		loading = true;
 
-		const rawBalances = await inventory.methods.balanceOfBatch(batchedAccounts, keys).call();
+		const rawBalances = await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call() || [];
 
 		items = rawBalances.map((rawBalance: string, index: number) => {
 			const tokenId = keys[index];
