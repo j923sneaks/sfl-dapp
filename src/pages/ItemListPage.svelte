@@ -5,7 +5,7 @@
 	import { batchAccounts } from '../utils';
 
 	import { inventoryStore } from '../stores';
-	import { ALL, CROPS, NFTs, RESOURCES, TOOLS } from '../constants';
+	import { ALL, CROPS, RESOURCES, TOOLS } from '../constants';
 
 	import type { Item } from '../types';
 	import ItemList from '../components/ItemList.svelte';
@@ -47,5 +47,4 @@
 <!-- arbitrary order -->
 <ItemList title="Crops" {showZeroBalance} {loading} record={CROPS} allItems={items} />
 <ItemList title="Resources" {showZeroBalance} {loading} record={RESOURCES} allItems={items} />
-<ItemList title="NFTs" {showZeroBalance} {loading} record={NFTs} allItems={items} />
 <ItemList title="Tools" {showZeroBalance} {loading} record={TOOLS} allItems={items} />
