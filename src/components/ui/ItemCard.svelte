@@ -26,7 +26,6 @@
 	.card {
 		height: 250px;
 		width: 200px;
-		border: 1px gainsboro solid;
 		background-color: gainsboro;
 		border-radius: 10px;
 		margin: 4px;

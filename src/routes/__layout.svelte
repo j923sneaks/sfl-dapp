@@ -4,10 +4,9 @@
 	import { defaultEvmStores, makeContractStore } from 'svelte-web3';
 	import Decimal from 'decimal.js-light';
 
-	import { farmStore, inventoryStore } from '../stores';
+	import { inventoryStore } from '../stores';
 	import { MAINNET } from '../constants';
 	import InventoryJSON from '../abi/Inventory.json';
-	import FarmJSON from '../abi/Farm.json';
 
 	import NavLinks from '../components/ui/NavLinks.svelte';
 
@@ -21,7 +20,6 @@
 		defaultEvmStores.setProvider();
 
 		inventory = makeContractStore(InventoryJSON, MAINNET.INVENTORY) as any;
-		farm = makeContractStore(FarmJSON, MAINNET.FARM) as any;
 
 		Decimal.set({
 			toExpPos: 30,
@@ -32,7 +30,6 @@
 	// react on completed stores
 	$: {
 		inventoryStore.set($inventory);
-		farmStore.set($farm);
 	}
 
 	const toHome = () => goto('/');

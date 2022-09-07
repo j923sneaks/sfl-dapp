@@ -11,9 +11,3 @@ export type Item = {
 };
 
 export type ItemRecord = Record<number, Item>;
-
-export type Farm = {
-	account: string;
-	owner: string;
-	tokenId: string;
-};
