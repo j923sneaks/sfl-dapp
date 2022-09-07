@@ -43,7 +43,6 @@
 	<slot />
 </main>
 <footer>
-	<h4>Made by j923sneaks</h4>
 </footer>
 
 <style>

@@ -10,12 +10,12 @@
 
 	import TransferForm from '../components/TransferForm.svelte';
 
-	let selectItems: Item[] = [];
+	let items: Item[] = [];
 	const keys = Object.keys(ALL).map(Number);
 
 	const getItems = async () => {
 		const rawBalances = await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call() || [];
-		selectItems = rawBalances
+		items = rawBalances
 			.map((rawBalance: string, index: number) => {
 				const tokenId = keys[index];
 				return {
@@ -34,8 +34,17 @@
 
 	$: ($inventoryStore && batchedAccounts), getItems();
 </script>
-<!-- Form Page -->
-<TransferForm {selectItems} on:save={handleFormSave} />
-<!-- Summary Page -->
-<!-- Confirm Modal ? -->
-<style></style>
+<div>
+	<!-- Form Page -->
+	<TransferForm {items} on:save={handleFormSave} />
+	<!-- Summary Page -->
+	<!-- Confirm Modal ? -->
+</div>
+<style>
+ /* pad when screen is larger */
+ @media screen and (min-width: 640px) {
+	div {
+		padding: 0 20%;
+	}
+ }
+</style>

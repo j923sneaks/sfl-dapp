@@ -6,9 +6,9 @@
   import type { Item } from '../types';
   import { ALL } from '../constants';
 
-  export let selectItems: Item[] = [];
-  const dispatch = createEventDispatcher();
-  const VALID_NUMBER = new RegExp(/^\d*\.?\d*$/);
+  import TransferListItem from './ui/TransferListItem.svelte';
+
+  type SelectItem = Item & { disabled: Boolean };
 
   type FormData = {
     to: string;
@@ -21,6 +21,11 @@
     amount: number;
   };
 
+  export let items: Item[] = [];
+  const dispatch = createEventDispatcher();
+  const VALID_NUMBER = new RegExp(/^\d*\.?\d*$/);
+
+  let selectItems: SelectItem[] = []; // array to be manipulated
   let formData: FormData = { to: '', tokenIds: [], amounts: [] };
   let itemToAdd: ToAdd = { tokenId: 0, amount: 0 };
   let isAddDisabled = true;
@@ -34,22 +39,39 @@
     itemToAdd.amount = VALID_NUMBER.test(event.target.value) ? Number(event.target.value) : 0;
   };
 
-  // add to formData, remove from selectItems, reset itemToAdd
+  // add to formData, hide in selectItems, reset itemToAdd
   const handleAdd = () => {
     const { amount, tokenId } = itemToAdd;
-    const index = selectItems.findIndex((item) => item.tokenId === tokenId);
+    const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
 
     if (index === -1) return;
 
-    selectItems.splice(index, 1);
     formData.tokenIds.push(tokenId);
     formData.amounts.push(new Decimal(amount));
     itemToAdd = { tokenId: 0, amount: 0 };
+    
+    selectItems[index].disabled = true;
 
     // re render
     formData = formData;
     selectItems = selectItems;
+  };
 
+  // remove from formData, show in selectItems
+  const handleListItemClick = (index: number) => {
+    const { tokenId } = list[index];
+    const selectItemIndex = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
+
+    if (selectItemIndex === -1) return;
+
+    selectItems[selectItemIndex].disabled = false;
+
+    formData.tokenIds.splice(index, 1);
+    formData.amounts.splice(index, 1);
+
+    // re render
+    formData = formData;
+    selectItems = selectItems;
   };
 
   const handleSave = () => {
@@ -58,10 +80,12 @@
     });
   };
 
+  $: selectItems = items as SelectItem[];
+
   // validate itemToAdd
   $: {
     const { amount, tokenId } = itemToAdd;
-    const index = selectItems.findIndex((item) => item.tokenId === tokenId);
+    const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
 
     isAddDisabled = 
       index === -1 || 
@@ -92,18 +116,16 @@
     <select bind:value={itemToAdd.tokenId} on:change={handleItemChange}>
       <option value={0} hidden disabled>select item</option>
       {#each selectItems as item}
-        <option value={item.tokenId}>{item.name}</option>
+        <option value={item.tokenId} disabled={!!item.disabled}>{item.name}</option>
       {/each}
     </select>
     <input type="number" name="amount" min="0" bind:value={itemToAdd.amount} on:input={handleAmountChange} />
     <button disabled={isAddDisabled} on:click={handleAdd}>Add</button>
   </div>
   <div class="container__block">
-    <ul>
-      {#each list as item}
-        <li>{ALL[item.tokenId].name} - {item.amount}</li>
-      {/each}
-    </ul>
+    {#each list as item, index}
+      <TransferListItem hasClose item={ALL[item.tokenId]} amount={item.amount} on:click={() => handleListItemClick(index)}/>
+    {/each}
   </div>
   <button disabled={isSaveDisabled} on:click={handleSave}>Save</button>
 </div>
@@ -115,6 +137,12 @@
     background-color:ghostwhite;
     border-radius: 10px;
     padding: 10px 64px;
+  }
+
+  @media screen and (max-width: 640px) {
+    .container {
+      padding: 10px;
+    }
   }
 
   .container__block {
