@@ -23,10 +23,12 @@
 
   export let items: Item[] = [];
   const dispatch = createEventDispatcher();
+  const VALID_ADDRESS = new RegExp(/^[0x\w]{42}$/);
   const VALID_NUMBER = new RegExp(/^\d*\.?\d*$/);
 
   let selectItems: SelectItem[] = []; // array to be manipulated
   let formData: FormData = { to: '', tokenIds: [], amounts: [] };
+  let maxAvailable = 0;
   let itemToAdd: ToAdd = { tokenId: 0, amount: 0 };
   let isAddDisabled = true;
   let isSaveDisabled = true;
@@ -74,11 +76,7 @@
     selectItems = selectItems;
   };
 
-  const handleSave = () => {
-    dispatch('save', { 
-      ...formData 
-    });
-  };
+  const handleSave = () => (dispatch('save', { ...formData }));
 
   $: selectItems = items as SelectItem[];
 
@@ -87,6 +85,7 @@
     const { amount, tokenId } = itemToAdd;
     const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
 
+    maxAvailable = index !== -1 ? selectItems[index]?.amount?.toNumber() || 0 : 0;
     isAddDisabled = 
       index === -1 || 
       amount === null ||
@@ -94,6 +93,7 @@
       new Decimal(amount).greaterThan(selectItems[index]?.amount || new Decimal(0));
   };
 
+  // @todo refactor formData props or nah
   $: {
     list = [];
     for (let index in formData.tokenIds) {
@@ -104,7 +104,14 @@
     }
 
     list = list;
-  }
+  };
+
+  $: {
+    const { to, tokenIds, amounts } = formData;
+    const isValidAddress = VALID_ADDRESS.test(to);
+
+    isSaveDisabled = !(isValidAddress && tokenIds.length && amounts.length);
+  };
 
 </script>
 <div class="container">
@@ -119,6 +126,7 @@
         <option value={item.tokenId} disabled={!!item.disabled}>{item.name}</option>
       {/each}
     </select>
+    <label for="amount">Max: {maxAvailable}</label>
     <input type="number" name="amount" min="0" bind:value={itemToAdd.amount} on:input={handleAmountChange} />
     <button disabled={isAddDisabled} on:click={handleAdd}>Add</button>
   </div>
