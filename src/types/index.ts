@@ -8,6 +8,7 @@ export type Item = {
 	amount?: Decimal;
 	unit?: Unit;
 	imageUrl?: string;
+	disabled?: boolean;
 };
 
 export type FormData = {

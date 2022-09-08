@@ -22,20 +22,22 @@
 				const tokenId = keys[index];
 				return {
 					...ALL[tokenId],
-					amount: new Decimal($web3.utils.fromWei(rawBalance, ALL[tokenId].unit))
+					amount: new Decimal($web3.utils.fromWei(rawBalance, ALL[tokenId].unit)),
+					disabled: false,
 				} as Item;
 			})
 			.filter((item: Item) => item.amount?.gt(0));
 	};
 
-	// subtract amounts from select items, add to batchTransfer
+	// enable, subtract amounts from select items, add to batchTransfer
 	const handleFormSave = (event: any) => {
-		const { tokenIds, amounts } = event.detail; 
+		const { tokenIds, amounts } = event.detail;
 
 		// @todo more efficient way
 		for (let i in tokenIds) {
 			const index = items.findIndex((item) => item.tokenId === tokenIds[i]);
 
+			items[index].disabled = false;
 			items[index].amount = items[index].amount?.minus(amounts[i]);
 		}
 
@@ -51,7 +53,7 @@
 </script>
 <div>
 	<!-- Form Page -->
-	<TransferForm {items} on:save={handleFormSave} />
+	<TransferForm selectItems={items} on:save={handleFormSave} />
 	<!-- Summary Page -->
 	<TransferList list={batchTransfer} />
 	<!-- Confirm Modal ? -->

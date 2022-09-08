@@ -7,19 +7,16 @@
 
   import TransferListItem from './ui/TransferListItem.svelte';
 
-  type SelectItem = Item & { disabled: Boolean };
-
   type ToAdd = {
     tokenId: number;
     amount: number;
   };
 
-  export let items: Item[] = [];
   const dispatch = createEventDispatcher();
   const VALID_ADDRESS = new RegExp(/^[0x\w]{42}$/);
   const VALID_NUMBER = new RegExp(/^\d*\.?\d*$/);
 
-  let selectItems: SelectItem[] = []; // array to be manipulated
+  export let selectItems: Item[] = []; // array to be manipulated
   let formData: FormData = { to: '', tokenIds: [], amounts: [] };
   let maxAvailable = 0;
   let itemToAdd: ToAdd = { tokenId: 0, amount: 0 };
@@ -69,9 +66,12 @@
     selectItems = selectItems;
   };
 
-  const handleSave = () => (dispatch('save', { ...formData }));
+  const handleSave = () => {
+    dispatch('save', { ...formData });
 
-  $: selectItems = items as SelectItem[];
+    formData = { to: '', tokenIds: [], amounts: [] };
+    itemToAdd = { tokenId: 0, amount: 0 };
+  };
 
   // validate itemToAdd
   $: {
