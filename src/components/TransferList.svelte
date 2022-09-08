@@ -11,6 +11,7 @@
 <div class="container">
   {#each list as item}
     <div>
+      <p>To: {item.to}</p>
       {#each item.tokenIds as tokenId, index}
         <TransferListItem item={ALL[tokenId]} amount={item.amounts[index].toNumber()} />
       {/each}

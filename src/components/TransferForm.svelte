@@ -1,20 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { web3 } from 'svelte-web3';
   import Decimal from 'decimal.js-light';
 
-  import type { Item } from '../types';
+  import type { FormData, Item } from '../types';
   import { ALL } from '../constants';
 
   import TransferListItem from './ui/TransferListItem.svelte';
 
   type SelectItem = Item & { disabled: Boolean };
-
-  type FormData = {
-    to: string;
-    tokenIds: number[];
-    amounts: Decimal[];
-  };
 
   type ToAdd = {
     tokenId: number;

@@ -5,12 +5,14 @@
 
 	import { inventoryStore } from '../stores';
 
-	import type { Item } from 'src/types';
+	import type { FormData, Item } from 'src/types';
 	import { ALL } from '../constants';
 
 	import TransferForm from '../components/TransferForm.svelte';
+	import TransferList from '../components/TransferList.svelte';
 
 	let items: Item[] = [];
+	let batchTransfer: FormData[] = [];
 	const keys = Object.keys(ALL).map(Number);
 
 	const getItems = async () => {
@@ -26,8 +28,21 @@
 			.filter((item: Item) => item.amount?.gt(0));
 	};
 
+	// subtract amounts from select items, add to batchTransfer
 	const handleFormSave = (event: any) => {
-		console.log(event.detail);
+		const { tokenIds, amounts } = event.detail; 
+
+		// @todo more efficient way
+		for (let i in tokenIds) {
+			const index = items.findIndex((item) => item.tokenId === tokenIds[i]);
+
+			items[index].amount = items[index].amount?.minus(amounts[i]);
+		}
+
+		batchTransfer.push(event.detail);
+
+		items = items;
+		batchTransfer = batchTransfer;
 	};
 
 	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);
@@ -38,6 +53,7 @@
 	<!-- Form Page -->
 	<TransferForm {items} on:save={handleFormSave} />
 	<!-- Summary Page -->
+	<TransferList list={batchTransfer} />
 	<!-- Confirm Modal ? -->
 </div>
 <style>

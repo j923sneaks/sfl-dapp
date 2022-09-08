@@ -10,4 +10,10 @@ export type Item = {
 	imageUrl?: string;
 };
 
+export type FormData = {
+	to: string;
+	tokenIds: number[];
+	amounts: Decimal[];
+};
+
 export type ItemRecord = Record<number, Item>;
