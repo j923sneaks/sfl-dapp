@@ -123,7 +123,7 @@
     <input type="number" name="amount" min="0" bind:value={itemToAdd.amount} on:input={handleAmountChange} />
     <button disabled={isAddDisabled} on:click={handleAdd}>Add</button>
   </div>
-  <div class="container__block">
+  <div class="container__block scroll">
     {#each list as item, index}
       <TransferListItem hasClose item={ALL[item.tokenId]} amount={item.amount} on:click={() => handleListItemClick(index)}/>
     {/each}
@@ -148,5 +148,10 @@
 
   .container__block {
     margin: 10px;
+  }
+
+  .scroll {
+    max-height: 100px;
+    overflow: auto;
   }
 </style>

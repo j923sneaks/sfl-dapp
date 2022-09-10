@@ -11,9 +11,9 @@
 	import TransferForm from '../components/TransferForm.svelte';
 	import TransferList from '../components/TransferList.svelte';
 
+	const keys = Object.keys(ALL).map(Number);
 	let items: Item[] = [];
 	let batchTransfer: FormData[] = [];
-	const keys = Object.keys(ALL).map(Number);
 
 	const getItems = async () => {
 		const rawBalances = await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call() || [];
@@ -30,7 +30,7 @@
 	};
 
 	// enable, subtract amounts from select items, add to batchTransfer
-	const handleFormSave = (event: any) => {
+	const handleFormSave = (event: CustomEvent) => {
 		const { tokenIds, amounts } = event.detail;
 
 		// @todo more efficient way
@@ -47,6 +47,23 @@
 		batchTransfer = batchTransfer;
 	};
 
+	// remove from batchTransfer, add amounts to items
+	const handleRemove = (event: CustomEvent) => {
+		const { index } = event.detail;
+
+		for (let i = 0; i < batchTransfer[index].tokenIds.length; i += 1) {
+			const itemIndex = items.findIndex((item) => item.tokenId === batchTransfer[index].tokenIds[i]);
+
+			items[itemIndex].amount = items[itemIndex].amount?.add(batchTransfer[index].amounts[i]);
+		}
+
+		batchTransfer.splice(index, 1);
+
+		// re render
+		batchTransfer = batchTransfer;
+		items = items;
+	};
+
 	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);
 
 	$: ($inventoryStore && batchedAccounts), getItems();
@@ -55,7 +72,9 @@
 	<!-- Form Page -->
 	<TransferForm selectItems={items} on:save={handleFormSave} />
 	<!-- Summary Page -->
-	<TransferList list={batchTransfer} />
+	<TransferList list={batchTransfer} on:remove={handleRemove}/>
+	<!-- Transfer Button -->
+	<button class="transfer" disabled={!batchTransfer.length}>Transfer</button>
 	<!-- Confirm Modal ? -->
 </div>
 <style>
@@ -64,5 +83,10 @@
 	div {
 		padding: 0 20%;
 	}
+ }
+
+ .transfer {
+	width: 100%;
+	margin-top: 10px;
  }
 </style>
