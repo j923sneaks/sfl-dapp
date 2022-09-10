@@ -66,7 +66,9 @@
 
 	// convert Decimal to wei, contract call
 	const handleTransfer = async () => {
+		const gasPrice = await $web3.eth.getGasPrice();
 		const sanitized = [];
+
 		for (let transfer of batchTransfer) {
 
 			sanitized.push([
@@ -74,13 +76,9 @@
 				transfer.tokenIds,
 				transfer.amounts.map((amount) => $web3.utils.toWei(amount.toString())),
 			]);
-			// transfer.amounts.map((amount) => $web3.utils.toWei(amount.toString()));
 		}
 
-		console.log(sanitized);
-		console.log($selectedAccount);
-
-		await $inventoryExtendedStore.methods.multiItemMultiTransfer(sanitized).send({ from: $selectedAccount });
+		await $inventoryExtendedStore.methods.multiItemMultiTransfer(sanitized).send({ from: $selectedAccount, gasPrice });
 	};
 
 	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);

@@ -21,7 +21,7 @@
 		defaultEvmStores.setProvider();
 
 		inventory = makeContractStore(InventoryJSON, MAINNET.INVENTORY) as any;
-		inventoryExtended = makeContractStore(InventoryExtendedJSON, MAINNET.INVENTORY) as any;
+		inventoryExtended = makeContractStore(InventoryExtendedJSON, MAINNET.INVENTORY_EXTENDED) as any;
 
 		Decimal.set({
 			toExpPos: 30,
