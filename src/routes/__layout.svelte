@@ -4,15 +4,16 @@
 	import { defaultEvmStores, makeContractStore } from 'svelte-web3';
 	import Decimal from 'decimal.js-light';
 
-	import { inventoryStore } from '../stores';
+	import { inventoryStore, inventoryExtendedStore } from '../stores';
 	import { MAINNET } from '../constants';
 	import InventoryJSON from '../abi/Inventory.json';
+	import InventoryExtendedJSON from '../abi/InventoryExtended.json';
 
 	import NavLinks from '../components/ui/NavLinks.svelte';
 
 	import '../styles/global.css';
 
-	let inventory: any, farm: any;
+	let inventory: any, inventoryExtended: any;
 
 	// acceptable to execute here?
 	// initialize contracts and Decimal config to be shared across descendants
@@ -20,6 +21,7 @@
 		defaultEvmStores.setProvider();
 
 		inventory = makeContractStore(InventoryJSON, MAINNET.INVENTORY) as any;
+		inventoryExtended = makeContractStore(InventoryExtendedJSON, MAINNET.INVENTORY) as any;
 
 		Decimal.set({
 			toExpPos: 30,
@@ -30,6 +32,7 @@
 	// react on completed stores
 	$: {
 		inventoryStore.set($inventory);
+		inventoryExtendedStore.set($inventoryExtended);
 	}
 
 	const toHome = () => goto('/');

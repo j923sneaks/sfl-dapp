@@ -3,7 +3,7 @@
 	import Decimal from 'decimal.js-light';
 	import { batchAccounts } from '../utils';
 
-	import { inventoryStore } from '../stores';
+	import { inventoryStore, inventoryExtendedStore } from '../stores';
 
 	import type { FormData, Item } from 'src/types';
 	import { ALL } from '../constants';
@@ -64,6 +64,25 @@
 		items = items;
 	};
 
+	// convert Decimal to wei, contract call
+	const handleTransfer = async () => {
+		const sanitized = [];
+		for (let transfer of batchTransfer) {
+
+			sanitized.push([
+				transfer.to,
+				transfer.tokenIds,
+				transfer.amounts.map((amount) => $web3.utils.toWei(amount.toString())),
+			]);
+			// transfer.amounts.map((amount) => $web3.utils.toWei(amount.toString()));
+		}
+
+		console.log(sanitized);
+		console.log($selectedAccount);
+
+		await $inventoryExtendedStore.methods.multiItemMultiTransfer(sanitized).send({ from: $selectedAccount });
+	};
+
 	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);
 
 	$: ($inventoryStore && batchedAccounts), getItems();
@@ -74,7 +93,8 @@
 	<!-- Summary Page -->
 	<TransferList list={batchTransfer} on:remove={handleRemove}/>
 	<!-- Transfer Button -->
-	<button class="transfer" disabled={!batchTransfer.length}>Transfer</button>
+	<button class="transfer" disabled={!batchTransfer.length} on:click={handleTransfer}>Transfer</button>
+	<!-- Results? -->
 	<!-- Confirm Modal ? -->
 </div>
 <style>
