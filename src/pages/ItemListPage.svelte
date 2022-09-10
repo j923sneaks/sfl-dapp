@@ -22,7 +22,8 @@
 	const getItems = async () => {
 		loading = true;
 
-		const rawBalances = await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call() || [];
+		const rawBalances =
+			(await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call()) || [];
 
 		items = rawBalances.map((rawBalance: string, index: number) => {
 			const tokenId = keys[index];

@@ -1,7 +1,7 @@
 import type { ItemRecord } from 'src/types';
 import { ERC1155URI } from './config';
 
- export const CROPS: ItemRecord = {
+export const CROPS: ItemRecord = {
 	201: {
 		tokenId: 201,
 		name: 'Sunflower',

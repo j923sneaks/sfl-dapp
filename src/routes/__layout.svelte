@@ -45,8 +45,7 @@
 <main>
 	<slot />
 </main>
-<footer>
-</footer>
+<footer />
 
 <style>
 	header,

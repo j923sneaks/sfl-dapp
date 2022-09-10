@@ -1,157 +1,168 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import Decimal from 'decimal.js-light';
+	import { createEventDispatcher } from 'svelte';
+	import Decimal from 'decimal.js-light';
 
-  import type { FormData, Item } from '../types';
-  import { ALL } from '../constants';
+	import type { FormData, Item } from '../types';
+	import { ALL } from '../constants';
 
-  import TransferListItem from './ui/TransferListItem.svelte';
+	import TransferListItem from './ui/TransferListItem.svelte';
 
-  type ToAdd = {
-    tokenId: number;
-    amount: number;
-  };
+	type ToAdd = {
+		tokenId: number;
+		amount: number;
+	};
 
-  const dispatch = createEventDispatcher();
-  const VALID_ADDRESS = new RegExp(/^[0x\w]{42}$/);
-  const VALID_NUMBER = new RegExp(/^\d*\.?\d*$/);
+	const dispatch = createEventDispatcher();
+	const VALID_ADDRESS = new RegExp(/^[0x\w]{42}$/);
+	const VALID_NUMBER = new RegExp(/^\d*\.?\d*$/);
 
-  export let selectItems: Item[] = []; // array to be manipulated
-  let formData: FormData = { to: '', tokenIds: [], amounts: [] };
-  let maxAvailable = 0;
-  let itemToAdd: ToAdd = { tokenId: 0, amount: 0 };
-  let isAddDisabled = true;
-  let isSaveDisabled = true;
-  let list: ToAdd[] = [];
+	export let selectItems: Item[] = []; // array to be manipulated
+	let formData: FormData = { to: '', tokenIds: [], amounts: [] };
+	let maxAvailable = 0;
+	let itemToAdd: ToAdd = { tokenId: 0, amount: 0 };
+	let isAddDisabled = true;
+	let isSaveDisabled = true;
+	let list: ToAdd[] = [];
 
-  const handleItemChange = () => (itemToAdd.amount = 0);
+	const handleItemChange = () => (itemToAdd.amount = 0);
 
-  const handleAmountChange = (event: any) => {
-    // validate amount, reset to 0 if error
-    itemToAdd.amount = VALID_NUMBER.test(event.target.value) ? Number(event.target.value) : 0;
-  };
+	const handleAmountChange = (event: any) => {
+		// validate amount, reset to 0 if error
+		itemToAdd.amount = VALID_NUMBER.test(event.target.value) ? Number(event.target.value) : 0;
+	};
 
-  // add to formData, hide in selectItems, reset itemToAdd
-  const handleAdd = () => {
-    const { amount, tokenId } = itemToAdd;
-    const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
+	// add to formData, hide in selectItems, reset itemToAdd
+	const handleAdd = () => {
+		const { amount, tokenId } = itemToAdd;
+		const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
 
-    if (index === -1) return;
+		if (index === -1) return;
 
-    formData.tokenIds.push(tokenId);
-    formData.amounts.push(new Decimal(amount));
-    itemToAdd = { tokenId: 0, amount: 0 };
-    
-    selectItems[index].disabled = true;
+		formData.tokenIds.push(tokenId);
+		formData.amounts.push(new Decimal(amount));
+		itemToAdd = { tokenId: 0, amount: 0 };
 
-    // re render
-    formData = formData;
-    selectItems = selectItems;
-  };
+		selectItems[index].disabled = true;
 
-  // remove from formData, show in selectItems
-  const handleListItemClick = (index: number) => {
-    const { tokenId } = list[index];
-    const selectItemIndex = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
+		// re render
+		formData = formData;
+		selectItems = selectItems;
+	};
 
-    if (selectItemIndex === -1) return;
+	// remove from formData, show in selectItems
+	const handleListItemClick = (index: number) => {
+		const { tokenId } = list[index];
+		const selectItemIndex = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
 
-    selectItems[selectItemIndex].disabled = false;
+		if (selectItemIndex === -1) return;
 
-    formData.tokenIds.splice(index, 1);
-    formData.amounts.splice(index, 1);
+		selectItems[selectItemIndex].disabled = false;
 
-    // re render
-    formData = formData;
-    selectItems = selectItems;
-  };
+		formData.tokenIds.splice(index, 1);
+		formData.amounts.splice(index, 1);
 
-  const handleSave = () => {
-    dispatch('save', { ...formData });
+		// re render
+		formData = formData;
+		selectItems = selectItems;
+	};
 
-    formData = { to: '', tokenIds: [], amounts: [] };
-    itemToAdd = { tokenId: 0, amount: 0 };
-  };
+	const handleSave = () => {
+		dispatch('save', { ...formData });
 
-  // validate itemToAdd
-  $: {
-    const { amount, tokenId } = itemToAdd;
-    const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
+		formData = { to: '', tokenIds: [], amounts: [] };
+		itemToAdd = { tokenId: 0, amount: 0 };
+	};
 
-    maxAvailable = index !== -1 ? selectItems[index]?.amount?.toNumber() || 0 : 0;
-    isAddDisabled = 
-      index === -1 || 
-      amount === null ||
-      amount === 0 || 
-      new Decimal(amount).greaterThan(selectItems[index]?.amount || new Decimal(0));
-  };
+	// validate itemToAdd
+	$: {
+		const { amount, tokenId } = itemToAdd;
+		const index = selectItems.findIndex((item: Item) => item.tokenId === tokenId);
 
-  // @todo refactor formData props or nah
-  $: {
-    list = [];
-    for (let index in formData.tokenIds) {
-      list.push({
-        tokenId: formData.tokenIds[index],
-        amount: formData.amounts[index].toNumber(),
-      });
-    }
+		maxAvailable = index !== -1 ? selectItems[index]?.amount?.toNumber() || 0 : 0;
+		isAddDisabled =
+			index === -1 ||
+			amount === null ||
+			amount === 0 ||
+			new Decimal(amount).greaterThan(selectItems[index]?.amount || new Decimal(0));
+	}
 
-    list = list;
-  };
+	// @todo refactor formData props or nah
+	$: {
+		list = [];
+		for (let index in formData.tokenIds) {
+			list.push({
+				tokenId: formData.tokenIds[index],
+				amount: formData.amounts[index].toNumber()
+			});
+		}
 
-  $: {
-    const { to, tokenIds, amounts } = formData;
-    const isValidAddress = VALID_ADDRESS.test(to);
+		list = list;
+	}
 
-    isSaveDisabled = !(isValidAddress && tokenIds.length && amounts.length);
-  };
+	$: {
+		const { to, tokenIds, amounts } = formData;
+		const isValidAddress = VALID_ADDRESS.test(to);
 
+		isSaveDisabled = !(isValidAddress && tokenIds.length && amounts.length);
+	}
 </script>
+
 <div class="container">
-  <div class="container__block">
-    <label for="destAddress">To:</label>
-    <input type="text" name="destAdress" placeholder="address" bind:value={formData.to} />
-  </div>
-  <div class="container__block">
-    <select bind:value={itemToAdd.tokenId} on:change={handleItemChange}>
-      <option value={0} hidden disabled>select item</option>
-      {#each selectItems as item}
-        <option value={item.tokenId} disabled={!!item.disabled}>{item.name}</option>
-      {/each}
-    </select>
-    <label for="amount">Max: {maxAvailable}</label>
-    <input type="number" name="amount" min="0" bind:value={itemToAdd.amount} on:input={handleAmountChange} />
-    <button disabled={isAddDisabled} on:click={handleAdd}>Add</button>
-  </div>
-  <div class="container__block scroll">
-    {#each list as item, index}
-      <TransferListItem hasClose item={ALL[item.tokenId]} amount={item.amount} on:click={() => handleListItemClick(index)}/>
-    {/each}
-  </div>
-  <button disabled={isSaveDisabled} on:click={handleSave}>Save</button>
+	<div class="container__block">
+		<label for="destAddress">To:</label>
+		<input type="text" name="destAdress" placeholder="address" bind:value={formData.to} />
+	</div>
+	<div class="container__block">
+		<select bind:value={itemToAdd.tokenId} on:change={handleItemChange}>
+			<option value={0} hidden disabled>select item</option>
+			{#each selectItems as item}
+				<option value={item.tokenId} disabled={!!item.disabled}>{item.name}</option>
+			{/each}
+		</select>
+		<label for="amount">Max: {maxAvailable}</label>
+		<input
+			type="number"
+			name="amount"
+			min="0"
+			bind:value={itemToAdd.amount}
+			on:input={handleAmountChange}
+		/>
+		<button disabled={isAddDisabled} on:click={handleAdd}>Add</button>
+	</div>
+	<div class="container__block scroll">
+		{#each list as item, index}
+			<TransferListItem
+				hasClose
+				item={ALL[item.tokenId]}
+				amount={item.amount}
+				on:click={() => handleListItemClick(index)}
+			/>
+		{/each}
+	</div>
+	<button disabled={isSaveDisabled} on:click={handleSave}>Save</button>
 </div>
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    background-color:ghostwhite;
-    border-radius: 10px;
-    padding: 10px 64px;
-  }
+	.container {
+		display: flex;
+		flex-direction: column;
+		background-color: ghostwhite;
+		border-radius: 10px;
+		padding: 10px 64px;
+	}
 
-  @media screen and (max-width: 640px) {
-    .container {
-      padding: 10px;
-    }
-  }
+	@media screen and (max-width: 640px) {
+		.container {
+			padding: 10px;
+		}
+	}
 
-  .container__block {
-    margin: 10px;
-  }
+	.container__block {
+		margin: 10px;
+	}
 
-  .scroll {
-    max-height: 100px;
-    overflow: auto;
-  }
+	.scroll {
+		max-height: 100px;
+		overflow: auto;
+	}
 </style>

@@ -16,14 +16,15 @@
 	let batchTransfer: FormData[] = [];
 
 	const getItems = async () => {
-		const rawBalances = await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call() || [];
+		const rawBalances =
+			(await $inventoryStore?.methods.balanceOfBatch(batchedAccounts, keys).call()) || [];
 		items = rawBalances
 			.map((rawBalance: string, index: number) => {
 				const tokenId = keys[index];
 				return {
 					...ALL[tokenId],
 					amount: new Decimal($web3.utils.fromWei(rawBalance, ALL[tokenId].unit)),
-					disabled: false,
+					disabled: false
 				} as Item;
 			})
 			.filter((item: Item) => item.amount?.gt(0));
@@ -52,7 +53,9 @@
 		const { index } = event.detail;
 
 		for (let i = 0; i < batchTransfer[index].tokenIds.length; i += 1) {
-			const itemIndex = items.findIndex((item) => item.tokenId === batchTransfer[index].tokenIds[i]);
+			const itemIndex = items.findIndex(
+				(item) => item.tokenId === batchTransfer[index].tokenIds[i]
+			);
 
 			items[itemIndex].amount = items[itemIndex].amount?.add(batchTransfer[index].amounts[i]);
 		}
@@ -70,41 +73,46 @@
 		const sanitized = [];
 
 		for (let transfer of batchTransfer) {
-
 			sanitized.push([
 				transfer.to,
 				transfer.tokenIds,
-				transfer.amounts.map((amount) => $web3.utils.toWei(amount.toString())),
+				transfer.amounts.map((amount) => $web3.utils.toWei(amount.toString()))
 			]);
 		}
 
-		await $inventoryExtendedStore.methods.multiItemMultiTransfer(sanitized).send({ from: $selectedAccount, gasPrice });
+		await $inventoryExtendedStore.methods
+			.multiItemMultiTransfer(sanitized)
+			.send({ from: $selectedAccount, gasPrice });
 	};
 
 	$: batchedAccounts = batchAccounts(keys.length, $selectedAccount);
 
-	$: ($inventoryStore && batchedAccounts), getItems();
+	$: $inventoryStore && batchedAccounts, getItems();
 </script>
+
 <div>
 	<!-- Form Page -->
 	<TransferForm selectItems={items} on:save={handleFormSave} />
 	<!-- Summary Page -->
-	<TransferList list={batchTransfer} on:remove={handleRemove}/>
+	<TransferList list={batchTransfer} on:remove={handleRemove} />
 	<!-- Transfer Button -->
-	<button class="transfer" disabled={!batchTransfer.length} on:click={handleTransfer}>Transfer</button>
+	<button class="transfer" disabled={!batchTransfer.length} on:click={handleTransfer}
+		>Transfer</button
+	>
 	<!-- Results? -->
 	<!-- Confirm Modal ? -->
 </div>
-<style>
- /* pad when screen is larger */
- @media screen and (min-width: 640px) {
-	div {
-		padding: 0 20%;
-	}
- }
 
- .transfer {
-	width: 100%;
-	margin-top: 10px;
- }
+<style>
+	/* pad when screen is larger */
+	@media screen and (min-width: 640px) {
+		div {
+			padding: 0 20%;
+		}
+	}
+
+	.transfer {
+		width: 100%;
+		margin-top: 10px;
+	}
 </style>
